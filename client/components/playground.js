@@ -1,10 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-import Square from './square'
+import { initField, gameCycle } from '../redux/reducers/squares'
 
 const PlayGround = () => {
   const [x, setX] = useState(5)
   const [y, setY] = useState(5)
+  const { squares } = useSelector((store) => store.Squares)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(initField(x * y))
+  }, [dispatch, x, y])
+
   return (
     <div>
       <label htmlFor="xInput">Set X squares:</label>
@@ -23,8 +31,12 @@ const PlayGround = () => {
         value={y}
         onChange={(e) => setY(e.target.value)}
       />
-
-      <Square />
+      <button type="button" onClick={() => dispatch(gameCycle())}>
+        Start game
+      </button>
+      <div className="flex flex-wrap mx-auto" style={{ width: `${x * 28 * 0.25}rem` }}>
+        {Object.values(squares)}
+      </div>
     </div>
   )
 }
