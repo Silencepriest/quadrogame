@@ -11,6 +11,7 @@ import Home from '../components/home'
 import DummyView from '../components/dummy-view'
 import NotFound from '../components/404'
 import PlayGround from '../components/playground'
+import Lobby from '../components/lobby'
 
 import Startup from './startup'
 
@@ -73,7 +74,8 @@ const RootComponent = (props) => {
       <RouterSelector history={history} location={props.location} context={props.context}>
         <Startup>
           <Switch>
-            <Route exact path="/" component={() => <PlayGround />} />
+            <Route exact path="/" component={() => <Lobby />} />
+            <Route exact path="/game/:x/:y/:hard" component={() => <PlayGround />} />
             <Route exact path="/dashboard" component={() => <Home />} />
             <PrivateRoute exact path="/hidden-route" component={() => <DummyView />} />
             <Route component={() => <NotFound />} />
