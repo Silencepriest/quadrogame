@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import classnames from 'classnames'
 
-import { setStatus } from '../redux/reducers/squares'
+import { setStatus, setTime } from '../redux/reducers/squares'
 
 const Square = (props) => {
   const data = useSelector((store) => store.Squares.status[props.id])
@@ -12,7 +12,10 @@ const Square = (props) => {
     <button
       type="button"
       onClick={() => {
-        if (+current === props.id) dispatch(setStatus(current, 1))
+        if (+current === props.id) {
+          dispatch(setStatus(current, 1))
+          dispatch(setTime(true))
+        }
       }}
     >
       <div

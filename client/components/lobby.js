@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 const Lobby = () => {
   const [x, setX] = useState(5)
   const [y, setY] = useState(5)
+  const [isHard, setIsHard] = useState(false)
   return (
     <div className="flex flex-col justify-center items-center bg-green-400 w-screen h-screen">
       <label className="text-2xl" htmlFor="xInput">
@@ -26,7 +27,19 @@ const Lobby = () => {
         value={y}
         onChange={(e) => setY(e.target.value)}
       />
-      <Link className="px-8 py-2 mt-6 bg-red-600" to={`/game/${x}/${y}/${false}`}>Play</Link>
+      <label className="text-2xl" htmlFor="hard">
+        Make it hard:
+      </label>
+      <input
+        id="hard"
+        className="mx-4 w-10 bg-green-300 p-2 text-xl"
+        type="checkbox"
+        value={isHard}
+        onChange={() => setIsHard(!isHard)}
+      />
+      <Link className="px-8 py-2 mt-6 bg-red-600" to={`/game/${x}/${y}/${isHard}`}>
+        Play
+      </Link>
     </div>
   )
 }

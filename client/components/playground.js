@@ -6,7 +6,7 @@ import { useParams, Link } from 'react-router-dom'
 import { initField } from '../redux/reducers/squares'
 
 const PlayGround = () => {
-  const { x, y } = useParams()
+  const { x, y, hard } = useParams()
 
   const { squares, isOver } = useSelector((store) => store.Squares)
   const dispatch = useDispatch()
@@ -42,12 +42,14 @@ const PlayGround = () => {
           type="button"
           className="px-8 py-2 bg-green-600"
           onClick={() => {
-            dispatch(initField(x * y))
+            dispatch(initField(x * y, hard === 'true'))
           }}
         >
           {buttonText}
         </button>
-        <Link className="text-white mt-2" to="/">Go to Lobby</Link>
+        <Link className="text-white mt-2" to="/">
+          Go to Lobby
+        </Link>
       </div>
     )
 
