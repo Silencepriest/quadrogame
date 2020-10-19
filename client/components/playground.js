@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import classnames from 'classnames'
 import { useParams, Link } from 'react-router-dom'
@@ -7,20 +7,21 @@ import { initField } from '../redux/reducers/squares'
 
 const PlayGround = () => {
   const { x, y, hard } = useParams()
+  const [level, setLevel] = useState(-1)
 
-  const { squares, isOver } = useSelector((store) => store.Squares)
+  const { squares, isOver, cycleEnded } = useSelector((store) => store.Squares)
   const dispatch = useDispatch()
 
   let statusCode = ''
   let buttonText = ''
   let statusBlock = <></>
   if (isOver === 0) {
-    statusCode = 'Game over. You lose!'
+    statusCode = 'Game over!'
     buttonText = 'Play again'
   }
   if (isOver === 1) {
-    statusCode = 'Game over. You win!'
-    buttonText = 'Play again'
+    statusCode = 'You win!'
+    buttonText = 'Next level'
   }
   if (isOver === -2) {
     statusCode = 'Click play to play'
@@ -40,9 +41,16 @@ const PlayGround = () => {
         </p>
         <button
           type="button"
-          className="px-8 py-2 bg-green-600"
+          disabled={!cycleEnded}
+          className={classnames('px-8 py-2 bg-green-600', { 'cursor-not-allowed': !cycleEnded })}
           onClick={() => {
-            dispatch(initField(x * y, hard === 'true'))
+            if (isOver === 0) {
+              setLevel(-1)
+              dispatch(initField(x * y, hard === 'true', false))
+            } else {
+              setLevel(level + 1)
+              dispatch(initField(x * y, hard === 'true', true))
+            }
           }}
         >
           {buttonText}
@@ -56,6 +64,7 @@ const PlayGround = () => {
   return (
     <div>
       {statusBlock}
+      <p className="absolute top-0 right-0">level: {level}</p>
       <div className="flex flex-wrap mx-auto" style={{ width: `${x * 28 * 0.25}rem` }}>
         {Object.values(squares)}
       </div>

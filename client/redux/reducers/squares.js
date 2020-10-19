@@ -8,6 +8,7 @@ const SET_STATUS = 'SET_STATUS'
 const SET_CURRENT = 'SET_CURRENT'
 const GAME_OVER = 'GAME_OVER'
 const SET_TIME = 'SET_TIME'
+const LIFE_CYCLE = 'LIFE_CYCLE'
 
 const initialState = {
   status: {},
@@ -15,11 +16,18 @@ const initialState = {
   current: -1,
   isOver: -2,
   time: 1000,
-  hard: false
+  hard: false,
+  cycleEnded: true
 }
 
 const Squares = (store = initialState, action) => {
   switch (action.type) {
+    case LIFE_CYCLE: {
+      return {
+        ...store,
+        cycleEnded: action.payload
+      }
+    }
     case SET_TIME: {
       return {
         ...store,
@@ -51,7 +59,15 @@ const Squares = (store = initialState, action) => {
         status[i] = 0
         squares[i] = <Square key={uuid()} id={i} />
       }
-      return { ...store, status, squares, isOver: -1, current: -1, hard: action.payload.hard }
+      return {
+        status,
+        squares,
+        isOver: -1,
+        current: -1,
+        hard: action.payload.hard,
+        time: action.payload.time,
+        cycleEnded: false
+      }
     }
     default: {
       return { ...store }
@@ -64,6 +80,10 @@ export function setCurrent(id) {
     type: SET_CURRENT,
     payload: id
   }
+}
+
+function lifeCycle(end) {
+  return { type: LIFE_CYCLE, payload: end }
 }
 
 export function setTime(correct) {
@@ -97,10 +117,13 @@ function getRandom(data) {
 export function gameCycle() {
   return (dispatch, getState) => {
     const { Squares: data } = getState()
-    if (data.isOver === -1)
+    if (data.isOver === -1) {
       setTimeout(() => {
         dispatch(gameCycle())
       }, data.time)
+    } else {
+      dispatch(lifeCycle(true))
+    }
     if (data.status[data.current] === 0) {
       dispatch(setStatus(data.current, -1))
       dispatch(setTime(false))
@@ -113,9 +136,13 @@ export function gameCycle() {
   }
 }
 
-export function initField(count, hard) {
-  return (dispatch) => {
-    dispatch({ type: INIT_FIELD, payload: { count, hard } })
+export function initField(count, hard, nextLevel) {
+  return (dispatch, getState) => {
+    const { Squares: data } = getState()
+    const { time } = data
+    let newTime = time - time * 0.1
+    if (!nextLevel) newTime = 1000
+    dispatch({ type: INIT_FIELD, payload: { count, hard, time: newTime } })
     dispatch(gameCycle())
   }
 }
