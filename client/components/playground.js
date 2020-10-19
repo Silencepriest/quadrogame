@@ -29,7 +29,7 @@ const PlayGround = () => {
   }
   if (statusCode !== '')
     statusBlock = (
-      <div className="absolute flex flex-col h-screen w-screen justify-center items-center bg-opacity-50 bg-black">
+      <div className="fixed flex flex-col h-full w-full justify-center items-center bg-opacity-50 bg-black">
         <p
           className={classnames('text-5xl font-bold bg-white p-4 m-2 rounded-md opacity-75', {
             'text-red-700': isOver === 0,
